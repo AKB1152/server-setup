@@ -33,35 +33,12 @@ main () {
  
   # Nextcloud-config
   echo "" | tee /etc/apache2/conf-available/nextcloud.conf
-  java serverconf.java 911 /etc/apache2/conf-available/nextcloud.conf
+  java serverconf.java $ip 911 /etc/apache2/conf-available/nextcloud.conf
   sudo a2enconf 
   sudo systemctl reload apache2;
-  # <VirtualHost *:80>
-  #      DocumentRoot "/var/www/nextcloud"
- #       ServerName $ip
-#
-  #      ErrorLog ${APACHE_LOG_DIR}/nextcloud.error
- #       CustomLog ${APACHE_LOG_DIR}/nextcloud.access combined
-#
-    #    <Directory /var/www/nextcloud/>
-   #         Require all granted
-  #          Options FollowSymlinks MultiViews
- #           AllowOverride All
-#
-   #        <IfModule mod_dav.c>
-  #             Dav off
- #          </IfModule>
-#
-   #     SetEnv HOME /var/www/nextcloud
-  #      SetEnv HTTP_HOME /var/www/nextcloud
- #       Satisfy Any
-#
- #      </Directory>
-#
-#</VirtualHost>
-
+  
   # Nextcloud HTTPS CONFIG
-  java httpscfg.java /etc/apache2/sites-enabled/nextcloud-le-ssl.conf
+  java httpscfg.java $ip /etc/apache2/sites-enabled/nextcloud-le-ssl.conf
   #Header always set Strict-Transport-Security "max-age=31536000"
   sudo apache2ctl -t
   sudo systemctl reload apache2
@@ -99,7 +76,8 @@ main () {
   sudo systemctl reload apache2
   sudo ufw allow 443, 80;
   sudo cp /etc/apache2/conf-enabled/phpmyadmin.conf /etc/apache2/sites-available/phpmyadmin.conf
-  #<VirtualHost *:80>
+	java phpconf.java $ip 
+#<VirtualHost *:80>
 #    ServerName $ip
 #    DocumentRoot /var/www/phpmyadmin
 #
@@ -109,7 +87,7 @@ main () {
   # </VirtualHost>
   sudo a2ensite phpmyadmin.conf
   sudo systemctl reload apache2
-  read -p "try firefox" in;
+  read -p "try firefox" ion;
   sudo apt install certbot python3-certbot-apache
   sudo certbot --apache --agree-tos --redirect --hsts --staple-ocsp --must-staple -d $ip --email mcpe9005@gmail.com
 
